@@ -9,15 +9,19 @@ Python 3.7
 Node and stuff
 
 Installation
-We will see soon...
+Create and activate a virtualenv
+pip install -r requirements.txt
+cd react-app
+npm install
 
 Running
+Activate venv
 Flask
 export FLASK_APP=hello.py OR set FLASK_APP=hello.py (Windows)
 flask run
 
 React
-cd my-app
+cd react-app
 npm start
 
 And that's it...? 
