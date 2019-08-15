@@ -1,0 +1,3 @@
+.vscode/*
+/venv/*
+/my-app/node_modules/*
