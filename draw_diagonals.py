@@ -5,7 +5,7 @@ from artist_class import Artist
 class DiagonalArtist(Artist):
 
     def __init__(self):
-        super(Artist).__init__()
+        super().__init__()
         self.inputs["resolution"] = {
             "name": "Resolution",
             "type": "int",
@@ -25,7 +25,11 @@ class DiagonalArtist(Artist):
             "type": "color"
         }
 
-    def RunInputs(self, size, resolution, thickness, colour_single):
+    def RunInputs(self, size, **kwargs):
+
+        resolution = int(kwargs["Resolution"])
+        thickness = int(kwargs["Thickness"])
+        colour_single = kwargs["Colour"]
 
         header = (
             f'<svg xmlns="http://www.w3.org/2000/svg"'
@@ -37,17 +41,17 @@ class DiagonalArtist(Artist):
         output = header + '\n'
         # loop through
         for row in range(0, size, step):
-            for col in range(0, width, step):
+            for col in range(0, size, step):
                 # choose a random direction for the diagonal line
                 if random.choice([0, 1]) == 0:
                     # write the line
-                    output += draw_diagonal(
+                    output += self.draw_diagonal(
                         col, row, col + step, row + step,
                         colour_single, thickness
                         ) + '\n'
                 else:
                     # write the line
-                    output += draw_diagonal(
+                    output += self.draw_diagonal(
                         col + step, row, col, row + step,
                         colour_single, thickness
                         ) + '\n'
