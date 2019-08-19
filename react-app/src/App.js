@@ -4,6 +4,7 @@ import request from 'request';
 import Slider from '@material-ui/core/Slider';
 import { SliderPicker } from 'react-color';
 
+
 class App extends React.Component {
 
   constructor(props)
@@ -13,11 +14,13 @@ class App extends React.Component {
     {
       receivedText: "<None>",
       svgData: null,
-      n: 30,
-      color: 'black',
-      thickness: 2
+      artists: ["None"],
+      selectedArtist: null,
+      artistInputs: null,
+      artistToSend: {}
     };
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.handleArtistListChange = this.handleArtistListChange.bind(this);
   }
 
   componentDidMount() {
@@ -34,14 +37,15 @@ class App extends React.Component {
   }
 
   sendProps(){
+
+    var toSend = this.state.artistToSend;
+    console.log(toSend)
+
     request.post('http://localhost:5000/sendprops',
       {form:{
-        width: this.state.width,
+        width: this.state.width/2,
         height: this.state.height,
-        n: this.state.n,
-        color: this.state.color,
-        thickness: this.state.thickness
-      }}, (error, response, body)=>
+        args: toSend}}, (error, response, body)=>
     {
       console.error('error:', error); // Print the error if one occurred
       console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -52,44 +56,132 @@ class App extends React.Component {
     });
   }
 
+  getArtists(){
+    request.get('http://localhost:5000/artists',
+      (error, response, body)=>
+    {
+      //console.error('error:', error); // Print the error if one occurred
+      //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+      //console.log('body:', body); // Print the HTML for the Google homepage.
+      this.setState({
+        artists: JSON.parse(body),
+      });
+      this.setState({selectedArtist: this.state.artists[0]})
+    });
+  }
+
+  getArtistInputs(artist){
+    request.post('http://localhost:5000/artist_inputs',
+      {form:{
+        artist: artist
+      }}, (error, response, body)=>
+    {
+      console.error('error:', error); // Print the error if one occurred
+      console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+      console.log('body:', body); // Print the HTML for the Google homepage.
+      this.setState({artistInputs: JSON.parse(body)})
+
+      const ATS = {};
+      Object.entries(this.state.artistInputs).map(
+        ([input, params]) =>
+        {
+            ATS[params["name"]] = params["default"]
+        })
+      this.setState({artistToSend: ATS})
+      //this.renderArtist()
+    });
+  }
+
+  renderArtist(){
+    console.log(this.state.artistToSend)
+    if (this.state.artistInputs == null){
+      console.log("No artist loaded")
+      return
+    }
+    var toRender = []
+    console.log("Artist is loaded")
+    Object.entries(this.state.artistInputs).map(
+      ([input, params]) =>
+      {
+          console.log(input, params["type"])
+          const tp = params["type"]
+          if (tp === "int")
+          {toRender.push(
+          <div>
+            <text>{params["name"]}</text>
+            <Slider min={params["min"]}
+                    max={params["max"]}
+                    defaultValue={params["default"]}
+                    onChangeCommitted={(event, value) => {
+                      const ATS = this.state.artistToSend
+                      ATS[params["name"]] = value
+                      this.setState({artistToSend: ATS});
+                      this.sendProps();
+                    }}
+              />
+              </div>
+          )}
+          if (tp === "color")
+          {toRender.push(
+          <div>
+            <SliderPicker
+                    color={ this.state.artistToSend[params["name"]] }
+                    onChangeComplete={(color) => {
+                      const ATS = this.state.artistToSend
+                      ATS[params["name"]] = color.hex
+                      this.setState({artistToSend: ATS});
+                      this.sendProps();
+                    }}
+            />
+              </div>
+          )}
+      })
+      return toRender
+  }
+
   handleColorChange = (color) => {
     this.setState({color: color.hex });
     this.sendProps();
   }
 
+  handleArtistListChange (event) {
+    console.log(event.target.value)
+    this.setState({selectedArtist: event.target.value})
+    this.getArtistInputs(event.target.value)
+  }
+
   render(){
+
+    var artSelect
+
+    if (this.state.artists[0] === "None")
+    {
+      this.getArtists();
+      artSelect = <p>Waiting...</p>
+    }
+    else
+    {
+      artSelect =
+      <form onSubmit={this.handleArtistListChange}>
+      <label>
+        <div>Pick artist:</div>
+        <select  className="App-dropdown" value={this.state.selectedArtist} onChange={this.handleArtistListChange}>
+          {this.state.artists.map((option) =>
+          {
+            return (<option className="App-dropdown" value={option}>{option} </option>)
+          }
+            )}
+        </select>
+      </label>
+    </form>
+    }
+
     return (
         <div className="row">
           <div className="column">
-            <p>Diagonal Lines</p>
-            <SliderPicker
-                    color={ this.state.color }
-                    onChangeComplete={(color) => {
-                      this.setState({color: color.hex });
-                      this.sendProps();
-                    }}
-            />
-            <text>Resolution</text>
-            <Slider aria-label='Resolution'
-                    min={10}
-                    max={100}
-                    defaultValue={30}
-                    onChangeCommitted={(event, value) => {
-                      this.setState({ n: value });
-                      this.sendProps();
-                    }}
-              />
-
-            <text>Thickness</text>
-            <Slider aria-label='Thickness'
-                    min={1}
-                    max={10}
-                    defaultValue={2}
-                    onChangeCommitted={(event, value) => {
-                      this.setState({ thickness: value });
-                      this.sendProps();
-                    }}
-              />
+            {artSelect}
+            
+            {this.renderArtist()}
 
             <button className='button'
                 onClick={()=>this.sendProps()}>
