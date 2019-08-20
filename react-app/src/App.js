@@ -4,7 +4,7 @@ import request from 'request';
 import Slider from '@material-ui/core/Slider';
 import { SliderPicker } from 'react-color';
 
-const MY_IP = "jamesarcher.pythonanywhere.com/"
+const MY_IP = "http://jamesarcher.pythonanywhere.com"
 //const MY_IP = "localhost:3000/"
 
 
@@ -75,7 +75,7 @@ class App extends React.Component {
   }
 
   getArtistInputs(artist){
-    request.post(MY_IP + 'artist_inputs',
+    request.post(MY_IP + '/artist_inputs',
       {form:{
         artist: artist
       }}, (error, response, body)=>
