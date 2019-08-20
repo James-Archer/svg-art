@@ -67,8 +67,3 @@ class DiagonalArtist(Artist):
             f'<line x1="{x}" y1="{y}" x2="{x2}" y2="{y2}"'
             f' stroke="{color}" stroke-width="{thickness}" />'
                 )
-
-
-if __name__ == "__main__":
-    artist = DiagonalArtist()
-    artist.RunInputs(100, 50, 2, "red")
