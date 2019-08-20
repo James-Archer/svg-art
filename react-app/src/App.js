@@ -4,6 +4,9 @@ import request from 'request';
 import Slider from '@material-ui/core/Slider';
 import { SliderPicker } from 'react-color';
 
+const MY_IP = "jamesarcher.pythonanywhere.com/"
+//const MY_IP = "localhost:3000/"
+
 
 class App extends React.Component {
 
@@ -41,7 +44,7 @@ class App extends React.Component {
     var toSend = this.state.artistToSend;
     console.log(toSend)
 
-    request.post('http://localhost:5000/sendprops',
+    request.post(MY_IP + "/sendprops",
       {form:{
         width: this.state.width/2,
         height: this.state.height,
@@ -57,7 +60,7 @@ class App extends React.Component {
   }
 
   getArtists(){
-    request.get('http://localhost:5000/artists',
+    request.get(MY_IP + "/artists",
       (error, response, body)=>
     {
       //console.error('error:', error); // Print the error if one occurred
@@ -66,12 +69,13 @@ class App extends React.Component {
       this.setState({
         artists: JSON.parse(body),
       });
-      this.setState({selectedArtist: this.state.artists[0]})
+      this.setState({selectedArtist: this.state.artists[0]});
+      this.getArtistInputs(this.state.artists[0])
     });
   }
 
   getArtistInputs(artist){
-    request.post('http://localhost:5000/artist_inputs',
+    request.post(MY_IP + 'artist_inputs',
       {form:{
         artist: artist
       }}, (error, response, body)=>

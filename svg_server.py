@@ -3,8 +3,8 @@ from flask_cors import CORS, cross_origin
 import time
 import json
 
-import draw_lines as dl
 from draw_diagonals import DiagonalArtist
+from draw_rectangles import RectangleArtist
 
 
 def padZeros(num):
@@ -24,7 +24,7 @@ class Server():
 
         self.artists = {
             "Diagonals": DiagonalArtist(),
-            "Another artist": DiagonalArtist()
+            "Rectangles": RectangleArtist()
         }
         self.currentArtist = None
 
@@ -55,13 +55,6 @@ def get_stuff():
     current_time = time.localtime()
     hrs, mins = current_time[3], current_time[4]
     return f"Some flasky words! @ {padZeros(hrs)}:{padZeros(mins)}"
-
-
-@app.route('/get.svg', methods=["GET"])
-@cross_origin()
-def get_svg():
-    svg = "".join([i for i in open('lines.svg')])
-    return svg
 
 
 @app.route('/sendprops', methods=["POST"])
