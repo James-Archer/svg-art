@@ -26,7 +26,7 @@ Activate venv
 
 Flask
 
-export FLASK_APP=hello.py OR set FLASK_APP=hello.py (Windows)
+export FLASK_APP=svg_server.py OR set FLASK_APP=svg_server.py (Windows)
 
 flask run
 
