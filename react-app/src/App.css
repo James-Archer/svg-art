@@ -34,7 +34,7 @@
 }
 
 .column {
-  flex: 50%;
+  flex: 53%;
   background-color: #282c34;
   align-items: center;
   justify-content: center;
@@ -44,7 +44,7 @@
 }
 
 .columnSVG {
-  flex: 50%;
+  flex: 47%;
   align-items: center;
   justify-content: center;
 }

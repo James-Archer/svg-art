@@ -5,6 +5,7 @@ import json
 
 from draw_diagonals import DiagonalArtist
 from draw_rectangles import RectangleArtist
+from draw_squares import SquaresArtist
 
 
 def padZeros(num):
@@ -24,7 +25,8 @@ class Server():
 
         self.artists = {
             "Diagonals": DiagonalArtist(),
-            "Rectangles": RectangleArtist()
+            "Rectangles": RectangleArtist(),
+            "Tiles": SquaresArtist()
         }
         self.currentArtist = None
 
