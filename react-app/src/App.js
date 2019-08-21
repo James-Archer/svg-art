@@ -1,8 +1,10 @@
 import React from 'react';
 import './App.css';
+import logo from './logo.svg'
 import request from 'request';
 import Slider from '@material-ui/core/Slider';
 import { SliderPicker } from 'react-color';
+import { saveAs } from 'file-saver';
 
 //const MY_IP = "jamesarcher.pythonanywhere.com/"
 const MY_IP = "http://localhost:5000/"
@@ -20,7 +22,8 @@ class App extends React.Component {
       artists: ["None"],
       selectedArtist: null,
       artistInputs: null,
-      artistToSend: {}
+      artistToSend: {},
+      waiting: false
     };
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.handleArtistListChange = this.handleArtistListChange.bind(this);
@@ -40,22 +43,27 @@ class App extends React.Component {
   }
 
   sendProps(){
-    var toSend = this.state.artistToSend;
-    console.log(toSend)
 
-    request.post(MY_IP + "sendprops",
-      {form:{
-        width: this.state.width/2,
-        height: this.state.height,
-        args: toSend}}, (error, response, body)=>
-    {
-      console.error('error:', error); // Print the error if one occurred
-      console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-      console.log('body:', body); // Print the HTML for the Google homepage.
-      this.setState({
-        svgData: body,
+    var toSend = this.state.artistToSend;
+
+    if (!this.state.waiting){
+      this.setState({waiting: true})
+      request.post(MY_IP + "sendprops",
+        {form:{
+          width: this.state.width/2,
+          height: this.state.height,
+          args: toSend}}, (error, response, body)=>
+      {
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the HTML for the Google homepage.
+        this.setState({
+          svgData: body,
+          waiting: false
+        });
+        
       });
-    });
+  }
   }
 
   getArtists(){
@@ -70,7 +78,6 @@ class App extends React.Component {
       });
       this.setState({selectedArtist: this.state.artists[0]});
       this.getArtistInputs(this.state.artists[0]);
-      this.sendProps();
     });
   }
 
@@ -154,9 +161,17 @@ class App extends React.Component {
     this.getArtistInputs(event.target.value)
   }
 
+  saveImage()
+  {
+    if (this.state.svgData === null){return}
+    var blob = new Blob([this.state.svgData], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "my-image.svg");
+  }
+
   render(){
 
     var artSelect
+    var svgColumn
 
     if (this.state.artists[0] === "None")
     {
@@ -180,6 +195,15 @@ class App extends React.Component {
     </form>
     }
 
+    if(this.state.svgData === null)
+    {
+      svgColumn = <img className="App-logo" src={logo} />
+    }
+    
+    else
+    {
+      svgColumn = <div dangerouslySetInnerHTML={{ __html: this.state.svgData}}/>
+    }
     return (
         <div className="row">
           <div className="column">
@@ -188,13 +212,19 @@ class App extends React.Component {
             {this.renderArtist()}
 
             <button className='button'
+                disabled={this.state.waiting}
                 onClick={()=>this.sendProps()}>
               Redraw!
             </button>
 
+            <button className='button'
+                onClick={()=>this.saveImage()}>
+              Save image!
+            </button>
+
           </div>
           <div className="columnSVG">
-            <div dangerouslySetInnerHTML={{ __html: this.state.svgData}}/>
+            {svgColumn}
           </div>
         </div>
     );

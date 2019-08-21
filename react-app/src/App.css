@@ -41,18 +41,22 @@
   text-align: center;
   font-size: calc(20px + 2vmin);
   color: white;
+  padding: 50px;
 }
 
 .columnSVG {
   flex: 47%;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .button {
   background-color: white;
   font-size: calc(20px + 2vmin);
   color: #282c34;
+  padding: 10px;
+  margin: 3vh;
 }
 
 .App-dropdown {
@@ -64,6 +68,7 @@
   font-size: calc(10px + 2vmin);
   color: #282c34;
   margin-bottom:  3vh;
+  padding: 10px;
 }
 
 @keyframes App-logo-spin {
