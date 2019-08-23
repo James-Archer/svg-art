@@ -126,8 +126,7 @@ class App extends React.Component {
                     onChangeCommitted={(event, value) => {
                       const ATS = this.state.artistToSend
                       ATS[params["name"]] = value
-                      this.setState({artistToSend: ATS});
-                      this.sendProps();
+                      this.setState({artistToSend: ATS}, () => this.sendProps());
                     }}
               />
               </div>
@@ -135,13 +134,12 @@ class App extends React.Component {
           if (tp === "color")
           {toRender.push(
           <div>
-            <SliderPicker
+            <SliderPicker className="color-slider"
                     color={ this.state.artistToSend[params["name"]] }
                     onChangeComplete={(color) => {
                       const ATS = this.state.artistToSend
                       ATS[params["name"]] = color.hex
-                      this.setState({artistToSend: ATS});
-                      this.sendProps();
+                      this.setState({artistToSend: ATS}, () => this.sendProps());
                     }}
             />
               </div>
