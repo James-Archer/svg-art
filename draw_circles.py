@@ -16,18 +16,20 @@ class CircleArtist(Artist):
         }
         self.inputs["colour-circle"] = {
                 "name": "Circle Colour",
-                "type": "color"
+                "type": "color",
+                "default": "#8f005d"
         }
         self.inputs["colour-lines"] = {
                 "name": "Line Colour",
-                "type": "color"
+                "type": "color",
+                "default": "#000000"
         }
 
     def RunInputs(self, size, **kwargs):
 
         resolution = int(kwargs["Resolution"]) * 2 - 1
 
-        circle_colour = kwargs["Circle Colour"]
+        circle_colour = "black"#kwargs["Circle Colour"]
         line_colour = kwargs["Line Colour"]
 
         header = (
@@ -49,7 +51,7 @@ class CircleArtist(Artist):
         #[print(i) for i in radii]
         for radius_outer, radius_inner in zip(radii[1::2], radii[:-1][::2]):
             #print(radius_inner, radius_outer)
-            angles = random.choices(range(0, 360), k=50*int(radius_outer))
+            angles = random.choices(range(0, 360), k=int(radius_outer))
             angles = [ang/180 * math.pi for ang in angles]
             for angle in angles:
                 #print(angle)

@@ -28,7 +28,8 @@ class SquaresArtist(Artist):
         super().__init__()
         self.inputs["colour-single"] = {
             "name": "Colour",
-            "type": "color"
+            "type": "color",
+            "default": "#000047"
         }
         self.inputs["dots"] = {
             "name": "Dots",

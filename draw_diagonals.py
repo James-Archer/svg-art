@@ -22,7 +22,8 @@ class DiagonalArtist(Artist):
         }
         self.inputs["colour-single"] = {
             "name": "Colour",
-            "type": "color"
+            "type": "color",
+            "default": "#8f005d"
         }
 
     def RunInputs(self, size, **kwargs):

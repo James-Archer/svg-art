@@ -132,18 +132,19 @@ class App extends React.Component {
               </div>
           )}
           if (tp === "color")
-          {toRender.push(
-          <div>
-            <SliderPicker className="color-slider"
-                    color={ this.state.artistToSend[params["name"]] }
-                    onChangeComplete={(color) => {
-                      const ATS = this.state.artistToSend
-                      ATS[params["name"]] = color.hex
-                      this.setState({artistToSend: ATS}, () => this.sendProps());
-                    }}
-            />
-              </div>
-          )}
+          {
+            toRender.push(
+            <div>
+              <SliderPicker className="color-slider"
+                      color={ this.state.artistToSend[params["name"]] }
+                      onChangeComplete={(color) => {
+                        const ATS = this.state.artistToSend
+                        ATS[params["name"]] = color.hex
+                        this.setState({artistToSend: ATS}, () => this.sendProps());
+                      }}
+              />
+                </div>
+            )}
       })
       return toRender
   }
